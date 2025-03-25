@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #414C6D; 
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #414C6D; /* White Background for the Container */
+    min-height: 100vh;
+}
+
+.intro-container {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.intro-container h1 {
+    color: #FFFFFF; /* Default text color */
+}
+
+.intro-container p {
+    color: #FFFFFF; /* Default text color */
+}
+
+.form-container {
+    background-color: #FFFFFF; /* Light Grey Background for Form */
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.tab-container {
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 1px solid #000; /* Separator line */
+}
+
+.tab {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.tab.active {
+    color: #000000; /* Active Tab Color */
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #D9D9D9; /* Grey Border */
+    border-radius: 5px;
+}
+
+.error {
+    color: red;
+    font-size: 12px;
+}
+
+.login-button, .register-button {
+    background-color: #D67229; /* Button Color */
+    color: #FFFFFF; /* Button Text Color */
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+}
