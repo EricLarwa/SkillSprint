@@ -9,7 +9,7 @@ body {
     flex-direction: column;
     align-items: center;
     padding: 20px;
-    background-color: #414C6D; /* White Background for the Container */
+    background-color: #414C6D; 
     min-height: 100vh;
 }
 
@@ -19,15 +19,15 @@ body {
 }
 
 .intro-container h1 {
-    color: #FFFFFF; /* Default text color */
+    color: #FFFFFF; 
 }
 
 .intro-container p {
-    color: #FFFFFF; /* Default text color */
+    color: #FFFFFF;
 }
 
 .form-container {
-    background-color: #FFFFFF; /* Light Grey Background for Form */
+    background-color: #FFFFFF; 
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
