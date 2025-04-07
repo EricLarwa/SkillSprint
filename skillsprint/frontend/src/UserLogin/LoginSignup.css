@@ -1,13 +1,17 @@
+* {
+    font-family: "IBM Plex Mono", monospace;
+}
+
 body {
     margin: 0;
-    font-family: Arial, sans-serif;
     background-color: #414C6D; 
 }
 
 .container {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
     align-items: center;
+    justify-content: center;
     padding: 20px;
     background-color: #414C6D; 
     min-height: 100vh;
@@ -15,15 +19,33 @@ body {
 
 .intro-container {
     text-align: center;
-    margin-bottom: 30px;
+    margin-bottom: 170px
+
 }
 
 .intro-container h1 {
-    color: #FFFFFF; 
+    color: #FFFFFF;
+    font-size: 60px;
+    margin-bottom: -60px;
+    font-weight: 400;
+    text-align: left;
+    margin-left: 70px;
+
+}
+
+.intro-container h2 {
+    color: #FFFFFF;
+    font-size: 60px;
+    margin-bottom: 0px;
+    font-weight: 400;
+    text-align: left;
+    margin-left: 70px;
 }
 
 .intro-container p {
     color: #FFFFFF;
+    text-align: left;
+    margin-left: 70px;
 }
 
 .form-container {
@@ -31,21 +53,44 @@ body {
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    height: 300px;
+    margin-left: 60px;
 }
 
-.tab-container {
-    display: flex;
-    justify-content: space-between;
-    border-bottom: 1px solid #000; /* Separator line */
+.tabs {
+    display: flex; /* Align tabs in a row */
+    flex-direction: row;
+    border-bottom: 2px solid #000; /* Black bottom border */
 }
 
 .tab {
-    padding: 10px 20px;
+    flex: 1;
+    padding: 10px 0; /* Add some vertical padding */
+    text-align: center; /* Center the text */
     cursor: pointer;
+    color: #ccc;
+    position: relative; /* For the divider positioning */
+    transition: color 0.3s;
+}
+
+/* Add divider between tabs */
+.tab:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 20%; /* Start at 20% from the top */
+    height: 60%; /* Make it 60% of the height */
+    width: 1px;
+    background-color: #000; /* Black divider */
+}
+
+.tab:hover {
+    color: #888; /* Slightly darker on hover */
 }
 
 .tab.active {
-    color: #000000; /* Active Tab Color */
+    color: black;
 }
 
 .form-group {
@@ -58,10 +103,22 @@ body {
 }
 
 .form-group input {
-    width: 100%;
+    width: 92%;
     padding: 10px;
-    border: 1px solid #D9D9D9; /* Grey Border */
+    border: 1px solid #d1d1d1;
     border-radius: 5px;
+    height: 30px;
+    font-size: large;
+}
+
+.Email {
+    margin-top: 20px;
+    padding: 10px;
+}
+
+.Password {
+    margin-top: 10px;
+    padding: 10px;
 }
 
 .error {
@@ -74,6 +131,10 @@ body {
     color: #FFFFFF; /* Button Text Color */
     border: none;
     padding: 10px;
+    margin-top: 15px;
+    font-size: 30px;
+    font-weight: 400;
+    height: 60px;
     border-radius: 5px;
     cursor: pointer;
     width: 100%;
