@@ -11,10 +11,10 @@ const LanguageHome = () => {
     }
 
     return (
-        <div className="container">
-        <h1>Language Lessons</h1>
-        <p>Enhance your language abilities one step <br></br>at a time with quizzes and lessons</p>
-        <button onClick={() => handleNavigation('/language-problems')}>Get Started</button>
+        <div className="dash-container">
+        <h1 className="keep-header">Language Lessons</h1>
+        <p className="keep-p">Enhance your language abilities one step <br></br>at a time with quizzes and lessons</p>
+        <button className="keep-button" onClick={() => handleNavigation('/coding-problems')}>Get Started</button>
         </div>
     )
 }
