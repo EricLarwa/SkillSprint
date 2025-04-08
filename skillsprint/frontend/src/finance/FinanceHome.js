@@ -14,7 +14,7 @@ const FinanceHome = () => {
         <div className="dash-container">
         <h1 className="keep-header">Finance Lessons</h1>
         <p className="keep-p">Enhance your finance abilities one step <br></br>at a time with quizzes and lessons</p>
-        <button className="keep-button" onClick={() => handleNavigation('/coding-problems')}>Get Started</button>
+        <button className="keep-button" onClick={() => handleNavigation('/finance-problems')}>Get Started</button>
         </div>
     )
 }
