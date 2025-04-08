@@ -1,5 +1,4 @@
-import React, {useState} from 'react'
-import axios from 'axios'
+import React from 'react'
 import './Dashboard.css'
 
 const Dashboard = () => {
@@ -14,11 +13,11 @@ const Dashboard = () => {
                     <p> Content </p>
                 </div>
                 <div className="box-two">
-                    <h2>Eric</h2>
+                    <h2>Jordan</h2>
                     <p> Content </p>
                 </div>
                 <div className="box-three">
-                    <h2>Eric</h2>
+                    <h2>Ricardo</h2>
                     <p> Content </p>
                 </div>
             </div>
