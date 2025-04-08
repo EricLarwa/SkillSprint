@@ -9,27 +9,54 @@
 }
 
 h1 {
-    margin-left: 10px;
+    margin-left: 30px;
     color: #fff;
+    font-size: 50px;
+    font-weight: 700;
 
 }
 
 .intro-boxes {
     display: flex;
     flex-direction: row;
-    justify-content: space-between;
+    align-items: center;
 
 }
 
 .box-one, .box-two, .box-three {
-    margin-left: 10px;
+    margin-left: 90px;
+    padding: 10px;
     border-radius: 10px;
     background-color: #FFFFFF;
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
-    width: 300px;
-    height: 300px;
+    width: 350px;
+    height: 450px;
+    text-align: center;
 }
 
 h2 {
+    margin: 5px;
+    padding-bottom: 10px;
     border-bottom: 2px solid #000;
+    color: black;
+    padding: 0px;
+    font-size: 30px;
+
 }
+
+p {
+    margin: 10px;
+    margin-top: 15px;
+    padding: 0px;
+    color: black;
+    font-size: 20px;
+    text-align: left;
+}
+.box-two {
+    margin-left: 60px;
+}
+
+.box-three {
+    margin-left: 60px;
+    margin-right: 40px;
+}   
