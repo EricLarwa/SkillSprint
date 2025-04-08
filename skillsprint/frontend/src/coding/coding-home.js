@@ -11,10 +11,10 @@ const CodingHome = () => {
     }
 
     return (
-        <div className="container">
-        <h1>Coding Lessons</h1>
-        <p>Enhance your coding abilities one step <br></br>at a time with quizzes and lessons</p>
-        <button onClick={() => handleNavigation('/coding-problems')}>Get Started</button>
+        <div className="dash-container">
+        <h1 className="keep-header">Coding Lessons</h1>
+        <p className="keep-p">Enhance your coding abilities one step <br></br>at a time with quizzes and lessons</p>
+        <button className="keep-button" onClick={() => handleNavigation('/coding-problems')}>Get Started</button>
         </div>
     )
 }
