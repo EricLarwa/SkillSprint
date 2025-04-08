@@ -38,7 +38,7 @@ const Navbar = () => {
                 <button onClick={() => handleNavigation("/project-motivation")}>Project Motivation</button>
                 <button onClick={() => handleNavigation("/coding")}>Coding Lessons</button>
                 <button onClick={() => handleNavigation("/finance")}>Finance Lessons</button>
-                <button onClick={() => handleNavigation("/business")}>Business Lessons</button>
+                <button onClick={() => handleNavigation("/language")}>Language Lessons</button>
                 <button onClick={() => handleNavigation("/achievments")}>Achievments</button>
             </div>
         </div>
