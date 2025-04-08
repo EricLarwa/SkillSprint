@@ -1,0 +1,35 @@
+* {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+
+.dashboard-container {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin-left: 10px;
+    color: #fff;
+
+}
+
+.intro-boxes {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+}
+
+.box-one, .box-two, .box-three {
+    margin-left: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    width: 300px;
+    height: 300px;
+}
+
+h2 {
+    border-bottom: 2px solid #000;
+}
