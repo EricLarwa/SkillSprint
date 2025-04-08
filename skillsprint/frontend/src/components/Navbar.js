@@ -17,9 +17,6 @@ const Navbar = () => {
         setIsNavOpen(false); // Close the mobile menu after navigation
     };
 
-    const handleSettings = () => {
-        navigate('/settings');
-    }
 
     const handleProfile = () => {
         navigate('/profile');
