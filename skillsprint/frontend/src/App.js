@@ -42,7 +42,7 @@ function App() {
             <>
               <Navbar />
               <LanguageProblems />
-            <>
+            </>
           }/>
           <Route path="/achievments" element={
             <>
