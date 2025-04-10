@@ -7,6 +7,7 @@ import FinanceHome from './finance/FinanceHome';
 import CodingHome from './coding/coding-home';
 import React from 'react';
 import FinanceProblems from './finance/FinanceProblems';
+import ProjectMotivation from './project-motivation/ProjectMotivation';
 
 function App() {
   return (
@@ -39,6 +40,10 @@ function App() {
             <>
               <Navbar />
               <FinanceProblems />
+          <Route path="/project-motivation" element={
+            <>
+              <Navbar />
+              <ProjectMotivation />
             </>
           }/>
         </Routes>
