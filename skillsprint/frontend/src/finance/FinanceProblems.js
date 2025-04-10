@@ -13,7 +13,7 @@ const FinanceProblems = () => {
     return (
         <div className="finance-container">
             <h1>Finance</h1>
-            <div className="intro-boxes">
+            <div className="finance-boxes">
                 <div className="financebox-one">
                     <h2>Question:</h2>
                     <p>**NEED to get from SQLlite**</p>

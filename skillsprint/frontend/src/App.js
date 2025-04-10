@@ -40,6 +40,8 @@ function App() {
             <>
               <Navbar />
               <FinanceProblems />
+            </>
+          }/>
           <Route path="/project-motivation" element={
             <>
               <Navbar />
