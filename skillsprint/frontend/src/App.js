@@ -6,6 +6,7 @@ import LanguageHome from './language/LanguageHome';
 import FinanceHome from './finance/FinanceHome';
 import CodingHome from './coding/coding-home';
 import React from 'react';
+import LanguageProblems from './language/LanguageProblems';
 import Achievements from './achievements/Achievements';
 import FinanceProblems from './finance/FinanceProblems';
 import ProjectMotivation from './project-motivation/ProjectMotivation';
@@ -36,6 +37,12 @@ function App() {
               <Navbar />
               <FinanceHome />
             </>
+          }/>
+          <Route path="/language-problems" element={
+            <>
+              <Navbar />
+              <LanguageProblems />
+            <>
           }/>
           <Route path="/achievments" element={
             <>
