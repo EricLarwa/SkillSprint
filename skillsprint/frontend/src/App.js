@@ -6,6 +6,7 @@ import LanguageHome from './language/LanguageHome';
 import FinanceHome from './finance/FinanceHome';
 import CodingHome from './coding/coding-home';
 import React from 'react';
+import FinanceProblems from './finance/FinanceProblems';
 
 function App() {
   return (
@@ -32,6 +33,12 @@ function App() {
             <>
               <Navbar />
               <FinanceHome />
+            </>
+          }/>
+          <Route path="/finance-problems" element={
+            <>
+              <Navbar />
+              <FinanceProblems />
             </>
           }/>
         </Routes>
