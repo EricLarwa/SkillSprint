@@ -1,19 +1,11 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
 import './LanguageProblems.css';
 
 const LanguageProblems = () => {
-
-    const navigate = useNavigate();
-
-    const handleNavigation = (path) => {
-        navigate(path);
-    }
-
     return (
         <div className="language-container">
             <h1>Language</h1>
-            <div className="intro-boxes">
+            <div className="language-boxes">
                 <div className="languagebox-one">
                     <h2>Question:</h2>
                     <p>**NEED to get from SQLlite**</p>

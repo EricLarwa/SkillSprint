@@ -3,13 +3,13 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import './LoginSignup.css';
 
+axios.defaults.withCredentials = true;
+
 const LoginSignup = () => {
     const [activeTab, setActiveTab] = useState('login');
     const [loginData, setLoginData] = useState({ email: "", password: "" });
     const [signupData, setSignupData] = useState({ email: "", password: ""})
     const [errors, setErrors] = useState({});
-    const [Email, setEmail] = useState('');
-    const [Password, setPassword] = useState('');
     const navigate = useNavigate();
 
     const handleTabChange = (tab) => {
@@ -29,36 +29,29 @@ const LoginSignup = () => {
     const HandleLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('http://localhost:5000/api/login', { 
+            const response = await axios.post('http://localhost:4000/api/login', { 
                 email: loginData.email,
-                password: loginData.password });
+                password: loginData.password 
+            });
             localStorage.setItem('token', response.data.access_token);
             console.log(response.data);
-
+    
             navigate('/dashboard');
         } catch (error) {
             setErrors({ login: 'Invalid email or password' });
         }
-
     }
-
+    
     const HandleRegister = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/api/register', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    email: signupData.email,
-                    password: signupData.password
-                })
+            const response = await axios.post('http://localhost:4000/api/register', {
+                email: signupData.email,
+                password: signupData.password
             });
             
-            const data = await response.json();
-            console.log(data);
-            navigate('/login');
+            console.log(response.data);
+            navigate('/');
         } catch (error) {
             setErrors({ register: 'Registration failed' });
             console.error("Registration error:", error);

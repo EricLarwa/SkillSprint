@@ -26,10 +26,10 @@ body {
 .intro-container h1 {
     color: #FFFFFF;
     font-size: 60px;
-    margin-bottom: -60px;
+    margin-bottom: 0px;
     font-weight: 400;
     text-align: left;
-    margin-left: 70px;
+    margin-left: 0px;
 
 }
 
@@ -39,14 +39,14 @@ body {
     margin-bottom: 0px;
     font-weight: 400;
     text-align: left;
-    margin-left: 70px;
+    margin-left: 0px;
     border-bottom: none;
 }
 
 .intro-container p {
     color: #FFFFFF;
     text-align: left;
-    margin-left: 70px;
+    margin-left: 0px;
 }
 
 .form-container {
