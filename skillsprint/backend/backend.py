@@ -3,24 +3,24 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token
+from models import db, User, Category, Question, Answer
+from seed_data import seed_database
+from db import initialize_databases
 
 app = Flask(__name__)
-# Use Flask-CORS properly
+
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
+app.config['SQLALCHEMY_BINDS'] = {'questionbank': 'sqlite:///questionbank.db'}
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_jwt_key'
-db = SQLAlchemy(app)
+
+db.init_app(app)
+
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
-PORT = 4000  # Keep using port 4000 since we know 5000 is occupied
-
-
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(150), unique=True, nullable=False)
-    password = db.Column(db.String(150), nullable=False)
+PORT = 4000 
 
 
 @app.route('/api/login', methods=['POST'])
@@ -48,13 +48,68 @@ def signup():
     db.session.commit()
     return jsonify({"msg": "User created successfully"}), 201
 
+# API Routes for the Question Bank
+@app.route('/api/categories', methods=['GET'])
+def get_categories():
+    categories = Category.query.all()
+    return jsonify([{'id': c.id, 'name': c.name, 'description': c.description} for c in categories])
 
-@app.route('/api/test', methods=['GET'])
-def test():
-    return jsonify({"msg": "CORS test successful"}), 200
+@app.route('/api/questions/<category>', methods=['GET'])
+def get_category_questions(category):
+    limit = request.args.get('limit', 10, type=int)
+    difficulty = request.args.get('difficulty', type=int)
+    
+    query = Question.query.join(Category).filter(Category.name == category)
+    
+    if difficulty:
+        query = query.filter(Question.difficulty_level == difficulty)
+    
+    questions = query.limit(limit).all()
+    
+    result = []
+    for q in questions:
+        question_data = {
+            'id': q.id,
+            'question': q.question_text,
+            'difficulty': q.difficulty_level,
+            'answers': []
+        }
+        
+        for a in q.answers:
+            question_data['answers'].append({
+                'id': a.id,
+                'text': a.answer_text,
+                'is_correct': a.is_correct,
+                'explanation': a.explanation
+            })
+        
+        result.append(question_data)
+    
+    return jsonify(result)
+
+@app.route('/api/check-answer', methods=['POST'])
+def check_answer():
+    data = request.json
+    question_id = data.get('question_id')
+    answer_id = data.get('answer_id')
+    
+    if not question_id or not answer_id:
+        return jsonify({'error': 'Missing question_id or answer_id'}), 400
+    
+    answer = Answer.query.get(answer_id)
+    if not answer or answer.question_id != question_id:
+        return jsonify({'error': 'Invalid answer ID'}), 400
+    
+    correct_answer = Answer.query.filter_by(question_id=question_id, is_correct=True).first()
+    
+    return jsonify({
+        'is_correct': answer.is_correct,
+        'explanation': answer.explanation if answer.is_correct else correct_answer.explanation
+    })
 
 
 if __name__ == '__main__':
    with app.app_context():
-        db.create_all()
+        initialize_databases()
+        seed_database()
         app.run(port=PORT, debug=True)
