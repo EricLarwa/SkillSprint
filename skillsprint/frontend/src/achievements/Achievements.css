@@ -1,0 +1,63 @@
+* {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+
+.achievements-container {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin-left: 90px;
+    color: #fff;
+    font-size: 50px;
+    font-weight: 700;
+
+}
+
+.achievements-boxes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.abox-one, .abox-two, .abox-three {
+    margin-left: 90px;
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+    width: 350px;
+    height: 450px;
+    width: auto;
+    text-align: center;
+}
+.abox-one {
+    margin-left: 90px;
+}
+.abox-three {
+    margin-right: 90px;
+}
+
+h2 {
+    margin: 5px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000;
+    color: black;
+    padding: 0px;
+    font-size: 30px;
+
+}
+label{
+    color: black;
+}
+
+p {
+    margin: 10px;
+    margin-top: 15px;
+    padding: 0px;
+    color: black;
+    font-size: 20px;
+    text-align: left;
+}
