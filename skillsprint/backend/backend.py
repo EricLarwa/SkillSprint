@@ -5,14 +5,16 @@ from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token
 
 app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"], supports_credentials=True, allow_headers=["Content-Type", "Authorization"])
+# Use Flask-CORS properly
+CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
+
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///users.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False  # Disable track modifications
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['JWT_SECRET_KEY'] = 'your_jwt_key'
 db = SQLAlchemy(app)
 bcrypt = Bcrypt(app)
 jwt = JWTManager(app)
-PORT = 5000
+PORT = 4000  # Keep using port 4000 since we know 5000 is occupied
 
 
 class User(db.Model):
@@ -20,14 +22,6 @@ class User(db.Model):
     email = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(150), nullable=False)
 
-
-@app.route('/api/register', methods=['OPTIONS'])
-def handle_options():
-    response = app.make_default_options_response()
-    response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
-    response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    response.headers.add('Access-Control-Allow-Methods', 'POST,OPTIONS')
-    return response
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -38,6 +32,7 @@ def login():
         access_token = create_access_token(identity={'email': user.email})
         return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad email or password"}), 401
+
 
 @app.route('/api/register', methods=['POST'])
 def signup():
@@ -53,7 +48,13 @@ def signup():
     db.session.commit()
     return jsonify({"msg": "User created successfully"}), 201
 
+
+@app.route('/api/test', methods=['GET'])
+def test():
+    return jsonify({"msg": "CORS test successful"}), 200
+
+
 if __name__ == '__main__':
    with app.app_context():
         db.create_all()
-        app.run(port=PORT)
+        app.run(port=PORT, debug=True)

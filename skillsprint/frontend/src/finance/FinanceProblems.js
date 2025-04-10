@@ -1,14 +1,7 @@
 import React from 'react'
-import { useNavigate } from 'react-router-dom';
 import './FinanceProblems.css';
 
 const FinanceProblems = () => {
-
-    const navigate = useNavigate();
-
-    const handleNavigation = (path) => {
-        navigate(path);
-    }
 
     return (
         <div className="finance-container">

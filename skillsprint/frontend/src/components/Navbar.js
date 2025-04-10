@@ -14,7 +14,7 @@ const Navbar = () => {
 
     const handleNavigation = (path) => {
         navigate(path);
-        setIsNavOpen(false); // Close the mobile menu after navigation
+        setIsNavOpen(false);
     };
 
 
@@ -30,7 +30,7 @@ const Navbar = () => {
                 <div className={`line ${isNavOpen ? 'open' : ''}`}></div>
             </div>
             <div className="navbar-links">  
-                <img src={Profile} onClick={handleProfile} />
+                <img alt="ProfileIMG" src={Profile} onClick={handleProfile} />
             </div>
 
             <div className={`nav-links ${isNavOpen ? 'open' : ''}`}>
