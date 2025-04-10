@@ -1,0 +1,66 @@
+* {
+    font-family: "IBM Plex Mono", monospace;
+}
+
+
+.language-container {
+    margin: 0;
+    padding: 0;
+}
+
+h1 {
+    margin-left: 90px;
+    color: #fff;
+    font-size: 50px;
+    font-weight: 700;
+
+}
+
+.intro-boxes {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: #ffffff;
+    margin-left: 90px;
+    margin-right: 90px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+.languagebox-one, .languagebox-two {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #FFFFFF;
+    width: 350px;
+    height: 450px;
+    text-align: center;
+    width: 50%;
+}
+.languagebox-one {
+    margin-left: 90px;
+}
+.languagebox-two {
+    margin-right: 90px;
+}
+
+h2 {
+    margin: 5px;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #000;
+    color: black;
+    padding: 0px;
+    font-size: 30px;
+
+}
+label{
+    color: black;
+}
+
+p {
+    margin: 10px;
+    margin-top: 15px;
+    padding: 0px;
+    color: black;
+    font-size: 20px;
+    text-align: left;
+}
