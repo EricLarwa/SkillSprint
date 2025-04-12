@@ -2,33 +2,40 @@ import React, { useState, useEffect} from 'react'
 import './FinanceProblems.css';
 
 const FinanceProblems = () => {
-
-    const [question, setQuestion] = useState(false)
-    const [answers, setAnswers] = useState([])
+    const [questions, setQuestions] = useState([])
+    const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null)
+    const [answerSubmitted, setAnswerSubmitted] = useState(false)
+    const [isCorrect, setIsCorrect] = useState(null)
 
     useEffect(() => {
-        const fetchQuestion = async () => {
+        const fetchQuestions = async () => {
             try {
                 const response = await fetch('http://localhost:4000/api/questions/Finance')
                 const data = await response.json()
-                console.log('Full log data:', data[0])
+                console.log('Full log data:', data)
                 if (data.length > 0) {
-                    setQuestion(data[0])
-                    setAnswers(data[0].answers)
+                    setQuestions(data) // Store the entire array of questions
                 }
             } catch (error) {
-                console.error('Error fetching question:', error)
+                console.error('Error fetching questions:', error)
             }
         }
-        fetchQuestion()
+        fetchQuestions()
     }, [])
 
+    const currentQuestion = questions[currentQuestionIndex]
+    // Get answers for the current question
+    const currentAnswers = currentQuestion?.answers || []
+
     const handleAnswerChange = (event) => {
-        setSelectedAnswer(event.target.value)
+        setSelectedAnswer(Number(event.target.value))
     }
+    
     const handleSubmit = async (event) => {
         event.preventDefault()
+        if (!currentQuestion) return
+        
         try {
             const response = await fetch('http://localhost:4000/api/check-answer', {
                 method: 'POST',
@@ -36,14 +43,33 @@ const FinanceProblems = () => {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    question_id: question.id,
+                    question_id: currentQuestion.id,
                     answer_id: selectedAnswer
                 })
             })
             const data = await response.json()
             console.log('Response:', data)
+
+            setAnswerSubmitted(true)
+            setIsCorrect(data.is_correct)
+            if (!data.is_correct) {
+                console.log('Correct answer!')
+            } else {
+                console.log('Incorrect answer.')
+            }
         } catch (error) {
             console.error('Error submitting answer:', error)
+        }
+    }
+
+    const handleNextQuestion = () => {
+        if (currentQuestionIndex < questions.length - 1) {
+            setCurrentQuestionIndex(currentQuestionIndex + 1)
+            setSelectedAnswer(null)
+            setAnswerSubmitted(false)
+            setIsCorrect(null)
+        } else {
+            console.log('No more questions available.')
         }
     }
 
@@ -53,27 +79,54 @@ const FinanceProblems = () => {
             <div className="finance-boxes">
                 <div className="financebox-one">
                     <h2>Question:</h2>
-                    {question ? <p>{question.question}</p> : <p>Loading...</p>}
+                    {currentQuestion ? <p>{currentQuestion.question}</p> : <p>Loading...</p>}
                 </div>
                 <div className="financebox-two">
                     <h2>Answer Choices</h2>
-                    {answers.length > 0 ? (
-                        answers.map((answer) => (
-                            <div key={answer.id}>
-                                <input
-                                    type='radio'
-                                    value={answer.id}
-                                    checked={selectedAnswer === answer.id}
-                                    onChange={handleAnswerChange}
-                                />
-                                <label>{answer.text}</label><br />
-                            </div>
-                        ))
+                    {currentAnswers.length > 0 ? (
+                        <div className="answer-choices">
+                            {currentAnswers.map((answer) => (
+                                <div key={answer.id} className="answer-choice">
+                                    <input
+                                        type='radio'
+                                        id={`answer-${answer.id}`}
+                                        value={answer.id}
+                                        checked={selectedAnswer === answer.id}
+                                        onChange={handleAnswerChange}
+                                    />
+                                    <label htmlFor={`answer-${answer.id}`} className="answer-label">
+                                        {answer.text}
+                                    </label>
+                                </div>
+                            ))}
+                        </div>
                     ) : (
                         <p>Loading answers...</p>
                     )}
+                    
+                    {/* Feedback message */}
+                    {answerSubmitted && (
+                        <div className={`feedback-message ${isCorrect ? 'correct' : 'incorrect'}`}>
+                            {isCorrect ? 'Correct!' : 'Incorrect. Try again!'}
+                        </div>
+                    )}
+                    
+                    <div className="btn-group">
+                        <button 
+                            className="submit-problem" 
+                            onClick={handleSubmit}
+                            disabled={answerSubmitted || selectedAnswer === null}
+                        >
+                            Submit Answer
+                        </button>
+
+                        {questions.length > 1 && currentQuestionIndex < questions.length - 1 && (
+                            <button className="next-question" onClick={handleNextQuestion}>
+                                Next Question
+                            </button>
+                        )}
+                    </div>
                 </div>
-                <button onClick={handleSubmit}>Submit Answer</button>
             </div>
         </div>
     );
