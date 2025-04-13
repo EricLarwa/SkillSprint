@@ -15,7 +15,7 @@ const FinanceProblems = () => {
                 const data = await response.json()
                 console.log('Full log data:', data)
                 if (data.length > 0) {
-                    setQuestions(data) // Store the entire array of questions
+                    setQuestions(data) 
                 }
             } catch (error) {
                 console.error('Error fetching questions:', error)
@@ -25,11 +25,11 @@ const FinanceProblems = () => {
     }, [])
 
     const currentQuestion = questions[currentQuestionIndex]
-    // Get answers for the current question
     const currentAnswers = currentQuestion?.answers || []
 
     const handleAnswerChange = (event) => {
         setSelectedAnswer(Number(event.target.value))
+        setAnswerSubmitted(false) 
     }
     
     const handleSubmit = async (event) => {
@@ -52,7 +52,7 @@ const FinanceProblems = () => {
 
             setAnswerSubmitted(true)
             setIsCorrect(data.is_correct)
-            if (!data.is_correct) {
+            if (data.is_correct) {
                 console.log('Correct answer!')
             } else {
                 console.log('Incorrect answer.')
@@ -104,7 +104,6 @@ const FinanceProblems = () => {
                         <p>Loading answers...</p>
                     )}
                     
-                    {/* Feedback message */}
                     {answerSubmitted && (
                         <div className={`feedback-message ${isCorrect ? 'correct' : 'incorrect'}`}>
                             {isCorrect ? 'Correct!' : 'Incorrect. Try again!'}
