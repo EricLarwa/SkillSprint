@@ -6,8 +6,10 @@ from flask_jwt_extended import JWTManager, create_access_token
 from models import db, User, Category, Question, Answer
 from seed_data import seed_database
 from db import initialize_databases
+import subprocess
+import os
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static')
 
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
@@ -106,6 +108,26 @@ def check_answer():
         'is_correct': answer.is_correct,
         'explanation': answer.explanation if answer.is_correct else correct_answer.explanation
     })
+
+@app.route('/api/run-code', methods=['POST'])
+def run_code():
+    data = request.get_json()
+    code = data.get('code', '')
+
+    file_name = 'temp_code.py'
+    with open(file_name, 'w') as f:
+        f.write(code)
+    try:
+        result = subprocess.run(['python', file_name], capture_output=True, text=True)
+        output = result.stdout
+        error = result.stderr
+        return jsonify({'output': output, 'error': error})
+    except Exception as e:
+        return jsonify({'output': '','error': str(e)}), 500
+    
+    finally:
+        if os.path.exists(file_name):
+            os.remove(file_name)
 
 
 if __name__ == '__main__':

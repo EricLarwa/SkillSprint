@@ -10,6 +10,7 @@ import LanguageProblems from './language/LanguageProblems';
 import Achievements from './achievements/Achievements';
 import FinanceProblems from './finance/FinanceProblems';
 import ProjectMotivation from './project-motivation/ProjectMotivation';
+import CodeSandbox from './coding/CodeSandbox';
 
 function App() {
   return (
@@ -60,6 +61,12 @@ function App() {
             <>
               <Navbar />
               <ProjectMotivation />
+            </>
+          }/>
+          <Route path="/coding-problems" element={
+            <>
+              <Navbar />
+              <CodeSandbox />
             </>
           }/>
         </Routes>
