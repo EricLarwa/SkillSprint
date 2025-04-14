@@ -1,5 +1,5 @@
 import React, { useState, useEffect} from 'react'
-import './FinanceProblems.css';
+import './LanguageProblems.css';
 
 const LanguageProblems = () => {
     const [questions, setQuestions] = useState([])
@@ -131,4 +131,4 @@ const LanguageProblems = () => {
     );
 };
 
-export default FinanceProblems;
+export default LanguageProblems;

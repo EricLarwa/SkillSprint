@@ -3,7 +3,7 @@
 }
 
 
-.language-container {
+.finance-container {
     margin: 0;
     padding: 0;
 }
@@ -16,7 +16,44 @@ h1 {
 
 }
 
-.language-boxes {
+.answer-choice {
+    margin-bottom: 12px; 
+    display: flex;
+    align-items: flex-start;
+}
+
+.answer-label {
+    margin-left: 8px;
+    display: inline-block;
+}
+
+
+.answer-choice br {
+    display: none;
+}
+
+/* Feedback message styling */
+.feedback-message {
+    margin: 15px 0;
+    padding: 10px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
+.correct {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.incorrect {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+
+.finance-boxes {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -27,7 +64,7 @@ h1 {
     box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.1);
 }
 
-.languagebox-one, .languagebox-two {
+.financebox-one, .financebox-two {
     padding: 10px;
     border-radius: 10px;
     background-color: #FFFFFF;
@@ -36,10 +73,10 @@ h1 {
     text-align: center;
     width: 50%;
 }
-.languagebox-one {
+.financebox-one {
     margin-left: 90px;
 }
-.languagebox-two {
+.financebox-two {
     margin-right: 90px;
 }
 
@@ -56,6 +93,29 @@ label{
     color: black;
 }
 
+
+
+.btn-group {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px;
+    margin-top: 100px;
+    margin-right: 220px
+}
+
+.submit-problem, .next-question {
+    border-radius: 5px;
+    background-color: #D67229;
+    border: none;
+    color: white;
+    text-align: center;
+    margin-right: 100px;
+}
+
+.next-question {
+    display: block;
+}
 p {
     margin: 10px;
     margin-top: 15px;
