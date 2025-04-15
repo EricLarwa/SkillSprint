@@ -20,11 +20,21 @@ h1 {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: wrap;
 
 }
 
+.intro-boxes > div {
+    width: calc(25% - 10px);
+    box-shadow:0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.sortable-placeholder {
+    border: 1px dashed #aaa
+}
+
 .box-one, .box-two, .box-three {
-    margin-left: 90px;
+    margin-left: 60px;
     padding: 10px;
     border-radius: 10px;
     background-color: #FFFFFF;
