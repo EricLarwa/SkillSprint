@@ -24,6 +24,24 @@ const FinanceProblems = () => {
         fetchQuestions()
     }, [])
 
+    const recordAchievement = (title, category, questionId) => {
+        axios.post('http://localhost:4000/api/achievements', {
+            title,
+            category,
+            question_id: questionId,
+        }, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        })
+        .then(() => {
+            console.log('Achievement recorded');
+        })
+        .catch((error) => {
+            console.error('Error recording achievement:', error);
+        });
+    };
+
     const currentQuestion = questions[currentQuestionIndex]
     const currentAnswers = currentQuestion?.answers || []
 
@@ -54,6 +72,7 @@ const FinanceProblems = () => {
             setIsCorrect(data.is_correct)
             if (data.is_correct) {
                 console.log('Correct answer!')
+                recordAchievement('Finance Problem Solved', 'Finance', currentQuestion.id)
             } else {
                 console.log('Incorrect answer.')
             }
