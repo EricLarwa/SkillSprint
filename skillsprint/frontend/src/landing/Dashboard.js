@@ -1,7 +1,16 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import $ from 'jquery'
+import 'jquery-ui/ui/widgets/sortable'
 import './Dashboard.css'
 
 const Dashboard = () => {
+    useEffect(() => {
+        $('.intro-boxes ').sortable({
+            item: '> div', 
+            placeholder: 'sortable-placholder',
+            grid: [20, 20]
+        })
+    }, [])
 
     return (
         <div className="dashboard-container">

@@ -262,7 +262,7 @@ const CodeSandbox = () => {
                     <h2 className='code-editr'>Code Editor</h2>
                     <AceEditor
                         mode="python"
-                        theme="github"
+                        theme="Ambiance"
                         onChange={setCode}
                         name="code_editor"
                         editorProps={{ $blockScrolling: true }}
