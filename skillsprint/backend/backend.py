@@ -3,7 +3,7 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token
-from models import db, User, Category, Question, Answer, Achievement
+from models import db, User, Category, Question, Answer
 from seed_data import seed_database
 from db import initialize_databases
 import subprocess
@@ -129,26 +129,6 @@ def run_code():
         if os.path.exists(file_name):
             os.remove(file_name)
         
-@app.route('/api/achievements', methods=['POST'])
-@jwt_required()
-def add_achievement():
-    identity = get_jwt_identity()  # This gets the identity dict from create_access_token()
-    user_email = identity['email']
-    user = User.query.filter_by(email=user_email).first()
-
-    if not user:
-        return jsonify({"msg": "User not found"}), 404
-
-    data = request.get_json()
-    new_achievement = Achievement(
-        user_id=user.id,
-        title=data['title'],  # assuming you send a title in the body
-        question_id=data.get('question_id')  # optional, for linking to a question
-    )
-    db.session.add(new_achievement)
-    db.session.commit()
-
-    return jsonify({"msg": "Achievement recorded!"}), 201
 
 if __name__ == '__main__':
    with app.app_context():

@@ -1,8 +1,7 @@
-import React from 'react'
-import './Achievements.css'
-// get the achievments from the backend here. 
-const Achievements = () => {
+import React, { useEffect, useState } from 'react';
+import './Achievements.css';
 
+const Achievements = () => {
     const [achievements, setAchievements] = useState({
         finance: [],
         coding: [],
@@ -12,38 +11,49 @@ const Achievements = () => {
     const token = localStorage.getItem('jwt_token'); // Retrieve the token from local storage
 
     useEffect(() => {
-        // Fetch achievements data from the backend
-        axios.get('http://localhost:4000/api/achievements', {
-            headers: {
-                Authorization: `Bearer ${token}`  // Send JWT token in headers
-            }
-        })
-        .then((response) => {
-            // Assuming the response data is an array of achievements
-            const achievementsData = response.data;
-            const categorizedAchievements = {
-                finance: [],
-                coding: [],
-                languages: []
-            };
+        // Initializing local achievements object
+        const localAchievements = {
+            finance: [],
+            coding: [],
+            languages: []
+        };
 
-            // Categorizing achievements based on the title or category
-            achievementsData.forEach((achievement) => {
-                if (achievement.title.includes('Finance')) {
-                    categorizedAchievements.finance.push(achievement);
-                } else if (achievement.title.includes('Coding')) {
-                    categorizedAchievements.coding.push(achievement);
-                } else if (achievement.title.includes('Languages')) {
-                    categorizedAchievements.languages.push(achievement);
-                }
-            });
+        // Retrieve completed achievements from local storage
+        const completedFinance = JSON.parse(localStorage.getItem('completedFinance') || '[]');
+        const completedCoding = JSON.parse(localStorage.getItem('completedCoding') || '[]');
+        const completedLanguages = JSON.parse(localStorage.getItem('completedLanguage') || '[]');
 
-            setAchievements(categorizedAchievements);
-        })
-        .catch((error) => {
-            console.error('Error fetching achievements:', error);
-        });
-    }, [token]);
+        // Finance achievements
+        if (completedFinance.length >= 1) {
+            localAchievements.finance.push({ title: '✅ First Finance Problem Completed!' });
+        }
+        if (completedFinance.length >= 5) {
+            localAchievements.finance.push({ title: '🔥 Completed 5 Finance Problems!' });
+        }
+
+        // Coding achievements
+        if (completedCoding.length >= 1) {
+            localAchievements.coding.push({ title: '✅ First Coding Problem Completed!' });
+        }
+        if (completedCoding.length >= 5) {
+            localAchievements.coding.push({ title: '🔥 Completed 5 Coding Problems!' });
+        }
+
+        // Language achievements
+        if (completedLanguages.length >= 1) {
+            localAchievements.languages.push({ title: '✅ First Language Lesson Completed!' });
+        }
+        if (completedLanguages.length >= 5) {
+            localAchievements.languages.push({ title: '🔥 Completed 5 Language Lessons!' });
+        }
+
+        // Update achievements state
+        console.log('Completed Finance:', completedFinance);
+        console.log('Completed Coding:', completedCoding);
+        console.log('Completed Languages:', completedLanguages);
+        
+        setAchievements(localAchievements);
+    }, []);
 
     return (
         <div className="achievements-container">
@@ -90,7 +100,7 @@ const Achievements = () => {
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export default Achievements;

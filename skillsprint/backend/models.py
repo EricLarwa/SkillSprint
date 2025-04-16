@@ -47,14 +47,3 @@ class Answer(db.Model):
     
     def __repr__(self):
         return f"<Answer {self.id} for Q{self.question_id}: {self.answer_text[:20]}...>"
-
-class Achievement(db.Model):
-    __tablename__ = 'achievements'
-    id = db.Column(db.Integer, primary_key=True)
-    title = db.Column(db.String(100), nullable=False)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    question_id = db.Column(db.Integer, db.ForeignKey('question.id'), nullable=True)
-    category = db.Column(db.String(50), nullable=False)  # Add a category field
-
-    user = db.relationship('User', backref='achievements', lazy=True)
-    question = db.relationship('Question', backref='achievements', lazy = True)

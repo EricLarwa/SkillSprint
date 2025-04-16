@@ -111,6 +111,17 @@ const CodeSandbox = () => {
             });
             
             setLoading(false);
+            
+            if (allPassed) {
+                console.log('Correct answer!');
+                const codingCompleted = JSON.parse(localStorage.getItem('completedCoding') || '[]');
+                // Avoid duplicate entries
+                if (!codingCompleted.includes(currentQuestion.id)) {
+                    codingCompleted.push(currentQuestion.id);
+                    localStorage.setItem('completedCoding', JSON.stringify(codingCompleted));
+                    }
+                console.log('Updated completedCoding:', codingCompleted);
+            }
         } catch (error) {
             console.error('Error testing code:', error);
             setOutput('Error: Failed to test code');
