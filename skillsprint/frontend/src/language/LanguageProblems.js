@@ -52,8 +52,16 @@ const LanguageProblems = () => {
 
             setAnswerSubmitted(true)
             setIsCorrect(data.is_correct)
+            
             if (data.is_correct) {
-                console.log('Correct answer!')
+                console.log('Correct answer!');
+                const languageCompleted = JSON.parse(localStorage.getItem('completedLanguage') || '[]');
+                // Avoid duplicate entries
+                if (!languageCompleted.includes(currentQuestion.id)) {
+                    languageCompleted.push(currentQuestion.id);
+                    localStorage.setItem('completedLanguage', JSON.stringify(languageCompleted));
+                    }
+                console.log('Updated completedlanguage:', languageCompleted);
             } else {
                 console.log('Incorrect answer.')
             }

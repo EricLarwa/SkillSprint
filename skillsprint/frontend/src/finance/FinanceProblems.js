@@ -53,7 +53,13 @@ const FinanceProblems = () => {
             setAnswerSubmitted(true)
             setIsCorrect(data.is_correct)
             if (data.is_correct) {
-                console.log('Correct answer!')
+                console.log('Correct answer!');
+                const financeCompleted = JSON.parse(localStorage.getItem('completedFinance') || '[]');
+                // Avoid duplicate entries
+                if (!financeCompleted.includes(currentQuestion.id)) {
+                    financeCompleted.push(currentQuestion.id);
+                    localStorage.setItem('completedFinance', JSON.stringify(financeCompleted));
+                    }
             } else {
                 console.log('Incorrect answer.')
             }
