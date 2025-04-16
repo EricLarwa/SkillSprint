@@ -71,6 +71,7 @@
     margin: 20px 0;
     padding: 15px;
     border-radius: 6px;
+    color: black;
 }
 
 .test-results.success {

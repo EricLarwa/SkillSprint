@@ -82,17 +82,42 @@ const CodeSandbox = () => {
             }
 
             const testCases = JSON.parse(testCasesAnswer.text);
+            const cleanedCode = code.split('\n').filter(line => !line.trim().startsWith('print(')).join('\n');
             const results = [];
             let allPassed = true;
 
             for (const testCase of testCases) {
-                const testCode = `${code}\n\n# Test case\nresult = ${getFunctionName(code)}(${JSON.stringify(testCase.input).slice(1, -1)})\nprint(f"RESULT: {result}")\n`;
-                
+                 const testCode = `${cleanedCode}\n\n# Test case\nresult = ${getFunctionName(code)}(${JSON.stringify(testCase.input)})\nprint(f"DEBUG INPUT: {${JSON.stringify(testCase.input)}}")\nprint(result)\n`;
                 const response = await axios.post('http://localhost:4000/api/run-code', { code: testCode });
                 const output = response.data.output || '';
+
+                console.log('raw output: ', output);
+
+                const outputLines = output.trim().split('\n').filter(line => line.trim() !== '');
+                const lastLine = outputLines[outputLines.length - 1];
                 
-                const resultMatch = output.match(/RESULT: (.*)/);
-                const actualResult = resultMatch ? eval(resultMatch[1]) : null;
+                const resultMatch = lastLine
+                
+                let actualResult = ""
+
+                try {
+                    // If it's a number
+                    if (!isNaN(resultMatch) && resultMatch !== '') {
+                        actualResult = Number(resultMatch);
+                    } 
+                    // If it's JSON (array or object)
+                    else if ((resultMatch.startsWith('[') && resultMatch.endsWith(']')) || 
+                            (resultMatch.startsWith('{') && resultMatch.endsWith('}'))) {
+                        actualResult = JSON.parse(resultMatch);
+                    } 
+                    // Otherwise treat as string
+                    else {
+                        actualResult = resultMatch;
+                    }
+                } catch (e) {
+                    console.error("Error parsing result:", e);
+                    actualResult = resultMatch; // Fallback to raw string
+                }
                 const passed = compareResults(actualResult, testCase.expected);
                 
                 if (!passed) allPassed = false;
@@ -134,7 +159,6 @@ const CodeSandbox = () => {
         return match ? match[1] : 'function';
     };
 
-    // Helper function to compare results (handles different types)
     const compareResults = (actual, expected) => {
         if (Array.isArray(expected)) {
             if (!Array.isArray(actual)) return false;
@@ -273,7 +297,7 @@ const CodeSandbox = () => {
                     <h2 className='code-editr'>Code Editor</h2>
                     <AceEditor
                         mode="python"
-                        theme="Ambiance"
+                        theme="xcode"
                         onChange={setCode}
                         name="code_editor"
                         editorProps={{ $blockScrolling: true }}

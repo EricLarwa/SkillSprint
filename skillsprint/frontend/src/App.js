@@ -21,54 +21,38 @@ function App() {
             <Navbar />
             <Dashboard />
           </>} />
-          <Route path="/coding" element={
-            <>
+          <Route path="/coding" element={<>
               <Navbar />
               <CodingHome />
-            </>
-          }/>
-          <Route path="/language" element={
-            <>
+            </>}/>
+          <Route path="/language" element={<>
               <Navbar />
               <LanguageHome />
-            </>
-          }/>
-          <Route path="/finance" element={
-            <>
+            </>}/>
+          <Route path="/finance" element={<>
               <Navbar />
               <FinanceHome />
-            </>
-          }/>
-          <Route path="/language-problems" element={
-            <>
+            </>}/>
+          <Route path="/language-problems" element={<>
               <Navbar />
               <LanguageProblems />
-            </>
-          }/>
-          <Route path="/achievments" element={
-            <>
+            </>}/>
+          <Route path="/achievments" element={<>
               <Navbar />
-              <Achievements/>
-            </>
+              <Achievements/></>
           }/>
-          <Route path="/finance-problems" element={
-            <>
+          <Route path="/finance-problems" element={<>
               <Navbar />
               <FinanceProblems />
-            </>
-          }/>
-          <Route path="/project-motivation" element={
-            <>
+            </>}/>
+          <Route path="/project-motivation" element={<>
               <Navbar />
               <ProjectMotivation />
-            </>
-          }/>
-          <Route path="/coding-problems" element={
-            <>
+            </>}/>
+          <Route path="/coding-problems" element={<>
               <Navbar />
               <CodeSandbox />
-            </>
-          }/>
+            </>}/>
         </Routes>
     </Router>
   );
