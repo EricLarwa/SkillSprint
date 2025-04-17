@@ -47,3 +47,11 @@ class Answer(db.Model):
     
     def __repr__(self):
         return f"<Answer {self.id} for Q{self.question_id}: {self.answer_text[:20]}...>"
+    
+class Achievement(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    category = db.Column(db.String(50), nullable=False)  # e.g., 'finance', 'coding', 'languages'
+    title = db.Column(db.String(255), nullable=False)
+
+    user = db.relationship('User', backref=db.backref('achievements', lazy=True))

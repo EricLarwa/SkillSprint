@@ -31,7 +31,7 @@ def login():
     password = request.json.get('password')
     user = User.query.filter_by(email=email).first()
     if user and bcrypt.check_password_hash(user.password, password):
-        access_token = create_access_token(identity={'email': user.email})
+        access_token = create_access_token(identity=json.dumps({'email': user.email}))
         return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad email or password"}), 401
 
@@ -134,10 +134,7 @@ import json
 @jwt_required()
 def get_user_achievements():
     identity = json.loads(get_jwt_identity())  # Will give you: {'email': user.email}
-    email = identity['email']
     print(f"JWT identity: {identity}")
-    # You could query the user from the DB if needed:
-    user = User.query.filter_by(email=email).first()
 
     # For now, let's just simulate achievement progress:
     mock_achievements = {
@@ -152,6 +149,30 @@ def get_user_achievements():
     }
 
     return jsonify(mock_achievements), 200
+
+@app.route('/api/user/add-achievement', methods=['POST'])
+@jwt_required()
+def add_achievement():
+    identity = json.loads(get_jwt_identity())  # Decode the JWT identity
+    email = identity['email']
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.json
+    category = data.get('category')
+    title = data.get('title')
+
+    if not category or not title:
+        return jsonify({"error": "Category and title are required"}), 400
+
+    # Add the achievement to the database
+    new_achievement = Achievement(user_id=user.id, category=category, title=title)
+    db.session.add(new_achievement)
+    db.session.commit()
+
+    return jsonify({"msg": "Achievement added successfully"}), 201
         
 
 if __name__ == '__main__':

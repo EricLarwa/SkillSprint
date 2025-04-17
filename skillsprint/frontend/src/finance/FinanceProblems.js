@@ -1,12 +1,31 @@
 import React, { useState, useEffect} from 'react'
 import './FinanceProblems.css';
-
+import axios from 'axios';
 const FinanceProblems = () => {
     const [questions, setQuestions] = useState([])
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null)
     const [answerSubmitted, setAnswerSubmitted] = useState(false)
     const [isCorrect, setIsCorrect] = useState(null)
+
+    const addAchievement = async (category, title) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.post(
+                'http://localhost:4000/api/user/add-achievement',
+                { category, title },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Achievement added:', response.data);
+        } catch (error) {
+            console.error('Error adding achievement:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -54,7 +73,9 @@ const FinanceProblems = () => {
             setIsCorrect(data.is_correct)
             if (data.is_correct) {
                 console.log('Correct answer!');
+                
                 const financeCompleted = JSON.parse(localStorage.getItem('completedFinance') || '[]');
+                addAchievement('finance', "✅ Completed a Finance Lesson");
                 // Avoid duplicate entries
                 if (!financeCompleted.includes(currentQuestion.id)) {
                     financeCompleted.push(currentQuestion.id);

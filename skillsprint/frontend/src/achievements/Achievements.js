@@ -11,35 +11,27 @@ const Achievements = () => {
 
     useEffect(() => {
         const fetchAchievements = async () => {
-                const token = localStorage.getItem('token');
-                console.log('JWT Token:', token); // Debugging log
-
-                if (!token) {
-                    console.error('JWT token is missing');
-                    return;
-                }       
-                try {
-                    const response = await axios.get('http://localhost:4000/api/user/achievements', {
-                        headers: {
-                            'Content-Type': 'application/json',
-                            Authorization: `Bearer ${token}`
-                        }
-                    });
-                    console.log('Response:', response); // Debugging log
-                    if (!response.ok) {
-                        console.error('Failed to fetch achievements:', response.status, response.statusText);
-                        return;
-                    }
-
-                    const data = await response.json()
-                    console.log('Response:', data)
+            const token = localStorage.getItem('token');
+            console.log('JWT Token:', token); // Debugging log
     
-                setAchievements(data);
-            } catch (error) {
-                console.error('Failed to fetch achievements:', error);
+            if (!token) {
+                console.error('JWT token is missing');
+                return;
             }
+            try {
+            const response = await axios.get('http://localhost:4000/api/user/achievements', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log('Response:', response.data); // Debugging log
+
+            setAchievements(response.data)
+        } catch (error) {
+            console.error('Error fetching achievements:', error);
         };
-    
+        }
         fetchAchievements();
     }, []);
 
