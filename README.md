@@ -7,6 +7,7 @@ This application uses a React.js frontend, and a Python backend using SQLite3 as
 - python3 backend.py
 
 ## Running the Frontend
+- npm install 
 - cd frontend
 - npm start
 
