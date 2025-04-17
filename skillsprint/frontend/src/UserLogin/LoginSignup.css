@@ -140,3 +140,9 @@ body {
     cursor: pointer;
     width: 100%;
 }
+
+.success-message {
+    color: green;
+    font-size: 14px;
+    margin-top: 10px;
+}

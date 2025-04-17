@@ -69,4 +69,21 @@ p {
 .box-three {
     margin-left: 60px;
     margin-right: 40px;
-}   
+}  
+
+.Jordan {
+    height: 150px;
+    width: 150px;
+}
+
+.Ricardo {
+    height: 200px;
+    width: 150px;
+    margin-top: 20px;
+}
+
+.Eric {
+    height: 200px;
+    width:150px;
+    margin-top: 10px;
+}

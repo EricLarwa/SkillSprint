@@ -9,6 +9,8 @@ const LoginSignup = () => {
     const [activeTab, setActiveTab] = useState('login');
     const [loginData, setLoginData] = useState({ email: "", password: "" });
     const [signupData, setSignupData] = useState({ email: "", password: ""})
+    const [LoginSuccessMessage, setLoginSuccessMessage] = useState("");
+    const [RegisterSuccessMessage, setRegisterSuccessMessage] = useState("");
     const [errors, setErrors] = useState({});
     const navigate = useNavigate();
 
@@ -33,6 +35,7 @@ const LoginSignup = () => {
                 email: loginData.email,
                 password: loginData.password 
             });
+            setLoginSuccessMessage("Login successful");
             localStorage.setItem('token', response.data.access_token);
             console.log(response.data);
     
@@ -49,6 +52,7 @@ const LoginSignup = () => {
                 email: signupData.email,
                 password: signupData.password
             });
+            setRegisterSuccessMessage("Registration successful");
             
             console.log(response.data);
             navigate('/');
@@ -80,6 +84,7 @@ const LoginSignup = () => {
                         </div>
                         <div className="form-group">
                             <input className="Password" type="password" name="password" placeholder="Password" value={loginData.password} onChange={(e) => handleInputChange(e, "login")} required />
+                            {LoginSuccessMessage && <div className="success-message">{LoginSuccessMessage}</div>}
                             {errors.password && <div className="error">{errors.password}</div>}
                         </div>
                         <button className="login-button">Login</button>
@@ -92,6 +97,7 @@ const LoginSignup = () => {
                         </div>
                         <div className="form-group">
                             <input className="Password" type="password" placeholder="Password" name="password" value={signupData.password} onChange={(e) => handleInputChange(e, "signup")} required />
+                            {RegisterSuccessMessage && <div className="success-message">{RegisterSuccessMessage}</div>}
                             {errors.password && <div className="error">{errors.password}</div>}
                         </div>
                     <button className="login-button">Register</button>
