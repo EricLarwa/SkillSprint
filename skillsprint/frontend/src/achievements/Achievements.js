@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Achievements.css';
+import axios from 'axios';
 
 const Achievements = () => {
     const [achievements, setAchievements] = useState({
@@ -8,51 +9,38 @@ const Achievements = () => {
         languages: []
     });
 
-    const token = localStorage.getItem('jwt_token'); // Retrieve the token from local storage
-
     useEffect(() => {
-        // Initializing local achievements object
-        const localAchievements = {
-            finance: [],
-            coding: [],
-            languages: []
+        const fetchAchievements = async () => {
+                const token = localStorage.getItem('token');
+                console.log('JWT Token:', token); // Debugging log
+
+                if (!token) {
+                    console.error('JWT token is missing');
+                    return;
+                }       
+                try {
+                    const response = await axios.get('http://localhost:4000/api/user/achievements', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            Authorization: `Bearer ${token}`
+                        }
+                    });
+                    console.log('Response:', response); // Debugging log
+                    if (!response.ok) {
+                        console.error('Failed to fetch achievements:', response.status, response.statusText);
+                        return;
+                    }
+
+                    const data = await response.json()
+                    console.log('Response:', data)
+    
+                setAchievements(data);
+            } catch (error) {
+                console.error('Failed to fetch achievements:', error);
+            }
         };
-
-        // Retrieve completed achievements from local storage
-        const completedFinance = JSON.parse(localStorage.getItem('completedFinance') || '[]');
-        const completedCoding = JSON.parse(localStorage.getItem('completedCoding') || '[]');
-        const completedLanguages = JSON.parse(localStorage.getItem('completedLanguage') || '[]');
-
-        // Finance achievements
-        if (completedFinance.length >= 1) {
-            localAchievements.finance.push({ title: '✅ First Finance Problem Completed!' });
-        }
-        if (completedFinance.length >= 5) {
-            localAchievements.finance.push({ title: '🔥 Completed 5 Finance Problems!' });
-        }
-
-        // Coding achievements
-        if (completedCoding.length >= 1) {
-            localAchievements.coding.push({ title: '✅ First Coding Problem Completed!' });
-        }
-        if (completedCoding.length >= 5) {
-            localAchievements.coding.push({ title: '🔥 Completed 5 Coding Problems!' });
-        }
-
-        // Language achievements
-        if (completedLanguages.length >= 1) {
-            localAchievements.languages.push({ title: '✅ First Language Lesson Completed!' });
-        }
-        if (completedLanguages.length >= 5) {
-            localAchievements.languages.push({ title: '🔥 Completed 5 Language Lessons!' });
-        }
-
-        // Update achievements state
-        console.log('Completed Finance:', completedFinance);
-        console.log('Completed Coding:', completedCoding);
-        console.log('Completed Languages:', completedLanguages);
-        
-        setAchievements(localAchievements);
+    
+        fetchAchievements();
     }, []);
 
     return (

@@ -2,7 +2,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
 from models import db, User, Category, Question, Answer
 from seed_data import seed_database
 from db import initialize_databases
@@ -127,7 +127,31 @@ def run_code():
     
     finally:
         if os.path.exists(file_name):
-            os.remove(file_name)
+            os.remove(file_name)   
+            
+import json
+@app.route('/api/user/achievements', methods=['GET'])
+@jwt_required()
+def get_user_achievements():
+    identity = json.loads(get_jwt_identity())  # Will give you: {'email': user.email}
+    email = identity['email']
+    print(f"JWT identity: {identity}")
+    # You could query the user from the DB if needed:
+    user = User.query.filter_by(email=email).first()
+
+    # For now, let's just simulate achievement progress:
+    mock_achievements = {
+        "finance": [
+            {"title": "✅ First Finance Problem Completed!"},
+            {"title": "🔥 Completed 5 Finance Problems!"}
+        ],
+        "coding": [
+            {"title": "✅ First Coding Problem Completed!"}
+        ],
+        "languages": []
+    }
+
+    return jsonify(mock_achievements), 200
         
 
 if __name__ == '__main__':
