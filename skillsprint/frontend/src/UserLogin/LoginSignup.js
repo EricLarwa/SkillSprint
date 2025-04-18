@@ -41,7 +41,14 @@ const LoginSignup = () => {
     
             navigate('/dashboard');
         } catch (error) {
-            setErrors({ login: 'Invalid email or password' });
+            if (error.response && error.response.data) {
+                setErrors({ 
+                    email: 'invalid email or password',
+                    password: 'invalid email or password'
+                 });
+            } else {
+                setErrors({ login: 'Login failed' });
+            }
         }
     }
     
@@ -57,8 +64,15 @@ const LoginSignup = () => {
             console.log(response.data);
             navigate('/');
         } catch (error) {
-            setErrors({ register: 'Registration failed' });
-            console.error("Registration error:", error);
+                    // Assuming the error response contains a message
+            if (error.response && error.response.data) {
+                setErrors({
+                    email: 'Registration failed', // Set specific error for email
+                    password: 'Registration failed' // Set specific error for password
+                });
+            } else {
+                setErrors({ register: 'An unexpected error occurred' });
+            }
         }
     }
 
@@ -84,9 +98,10 @@ const LoginSignup = () => {
                         </div>
                         <div className="form-group">
                             <input className="Password" type="password" name="password" placeholder="Password" value={loginData.password} onChange={(e) => handleInputChange(e, "login")} required />
-                            {LoginSuccessMessage && <div className="success-message">{LoginSuccessMessage}</div>}
-                            {errors.password && <div className="error">{errors.password}</div>}
+                            
+                            {errors.password && <div className="error">{errors.password}</div>} 
                         </div>
+                        {LoginSuccessMessage && <div className="success-message">{LoginSuccessMessage}</div>} 
                         <button className="login-button">Login</button>
                     </form>
                 ) : (
@@ -97,10 +112,11 @@ const LoginSignup = () => {
                         </div>
                         <div className="form-group">
                             <input className="Password" type="password" placeholder="Password" name="password" value={signupData.password} onChange={(e) => handleInputChange(e, "signup")} required />
-                            {RegisterSuccessMessage && <div className="success-message">{RegisterSuccessMessage}</div>}
+                        
                             {errors.password && <div className="error">{errors.password}</div>}
                         </div>
-                    <button className="login-button">Register</button>
+                        {RegisterSuccessMessage && <div className="success-message">{RegisterSuccessMessage}</div>}
+                        <button className="login-button">Register</button>
                     </form>
                 )}
             </div>

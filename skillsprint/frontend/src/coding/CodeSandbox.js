@@ -14,7 +14,26 @@ const CodeSandbox = () => {
     const [loading, setLoading] = useState(false);
     const [testResults, setTestResults] = useState(null);
     const [showSolution, setShowSolution] = useState(false);
-    const [difficulty, setDifficulty] = useState(0); 
+    const [difficulty, setDifficulty] = useState(0);
+
+    const addAchievement = async (category, title) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.post(
+                'http://localhost:4000/api/user/add-achievement',
+                { category, title },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Achievement added:', response.data);
+        } catch (error) {
+            console.error('Error adding achievement:', error);
+        }
+    };
 
     useEffect(() => {
         fetchQuestions();
@@ -26,11 +45,11 @@ const CodeSandbox = () => {
             const url = `http://localhost:4000/api/questions/Coding${difficulty ? `?difficulty=${difficulty}` : ''}`;
             const response = await axios.get(url);
             setQuestions(response.data);
-            
+
             if (response.data.length > 0) {
                 handleSelectQuestion(response.data[0]);
             }
-            
+
             setLoading(false);
         } catch (error) {
             console.error('Error fetching questions:', error);
@@ -40,16 +59,16 @@ const CodeSandbox = () => {
 
     const handleSelectQuestion = (question) => {
         setCurrentQuestion(question);
-        
+
         const parts = question.question.split("\n\n");
         const initialCodeIndex = parts.findIndex(part => part.startsWith("def "));
-        
+
         if (initialCodeIndex !== -1) {
             setCode(parts.slice(initialCodeIndex).join("\n\n"));
         } else {
             setCode("# Write your solution here");
         }
-        
+
         setOutput('');
         setTestResults(null);
         setShowSolution(false);
@@ -70,10 +89,10 @@ const CodeSandbox = () => {
 
     const handleTestCode = async () => {
         if (!currentQuestion) return;
-        
+
         try {
             setLoading(true);
- 
+
             const testCasesAnswer = currentQuestion.answers.find(a => a.explanation === "TEST_CASES");
             if (!testCasesAnswer) {
                 setOutput("Error: Test cases not found for this question.");
@@ -87,7 +106,7 @@ const CodeSandbox = () => {
             let allPassed = true;
 
             for (const testCase of testCases) {
-                 const testCode = `${cleanedCode}\n\n# Test case\nresult = ${getFunctionName(code)}(${JSON.stringify(testCase.input)})\nprint(f"DEBUG INPUT: {${JSON.stringify(testCase.input)}}")\nprint(result)\n`;
+                const testCode = `${cleanedCode}\n\n# Test case\nresult = ${getFunctionName(code)}(${JSON.stringify(testCase.input)})\nprint(f"DEBUG INPUT: {${JSON.stringify(testCase.input)}}")\nprint(result)\n`;
                 const response = await axios.post('http://localhost:4000/api/run-code', { code: testCode });
                 const output = response.data.output || '';
 
@@ -95,21 +114,21 @@ const CodeSandbox = () => {
 
                 const outputLines = output.trim().split('\n').filter(line => line.trim() !== '');
                 const lastLine = outputLines[outputLines.length - 1];
-                
+
                 const resultMatch = lastLine
-                
+
                 let actualResult = ""
 
                 try {
                     // If it's a number
                     if (!isNaN(resultMatch) && resultMatch !== '') {
                         actualResult = Number(resultMatch);
-                    } 
+                    }
                     // If it's JSON (array or object)
-                    else if ((resultMatch.startsWith('[') && resultMatch.endsWith(']')) || 
-                            (resultMatch.startsWith('{') && resultMatch.endsWith('}'))) {
+                    else if ((resultMatch.startsWith('[') && resultMatch.endsWith(']')) ||
+                        (resultMatch.startsWith('{') && resultMatch.endsWith('}'))) {
                         actualResult = JSON.parse(resultMatch);
-                    } 
+                    }
                     // Otherwise treat as string
                     else {
                         actualResult = resultMatch;
@@ -119,9 +138,9 @@ const CodeSandbox = () => {
                     actualResult = resultMatch; // Fallback to raw string
                 }
                 const passed = compareResults(actualResult, testCase.expected);
-                
+
                 if (!passed) allPassed = false;
-                
+
                 results.push({
                     input: testCase.input,
                     expected: testCase.expected,
@@ -129,23 +148,18 @@ const CodeSandbox = () => {
                     passed
                 });
             }
-            
+
             setTestResults({
                 allPassed,
                 results
             });
-            
+
             setLoading(false);
-            
+
             if (allPassed) {
                 console.log('Correct answer!');
-                const codingCompleted = JSON.parse(localStorage.getItem('completedCoding') || '[]');
-                // Avoid duplicate entries
-                if (!codingCompleted.includes(currentQuestion.id)) {
-                    codingCompleted.push(currentQuestion.id);
-                    localStorage.setItem('completedCoding', JSON.stringify(codingCompleted));
-                    }
-                console.log('Updated completedCoding:', codingCompleted);
+                addAchievement('coding', "✅ Completed a Coding Lesson");
+
             }
         } catch (error) {
             console.error('Error testing code:', error);
@@ -163,21 +177,21 @@ const CodeSandbox = () => {
         if (Array.isArray(expected)) {
             if (!Array.isArray(actual)) return false;
             if (actual.length !== expected.length) return false;
-            
+
             if (expected.every(item => typeof item !== 'object')) {
                 return JSON.stringify([...actual].sort()) === JSON.stringify([...expected].sort());
             }
-            
+
             return actual.every((item, i) => compareResults(item, expected[i]));
         } else if (typeof expected === 'object' && expected !== null) {
             if (typeof actual !== 'object' || actual === null) return false;
-            
+
             const expectedKeys = Object.keys(expected).sort();
             const actualKeys = Object.keys(actual).sort();
-            
+
             if (expectedKeys.length !== actualKeys.length) return false;
             if (!expectedKeys.every((key, i) => key === actualKeys[i])) return false;
-            
+
             return expectedKeys.every(key => compareResults(actual[key], expected[key]));
         } else {
             return actual === expected;
@@ -186,7 +200,7 @@ const CodeSandbox = () => {
 
     const handleShowSolution = () => {
         if (!currentQuestion) return;
-        
+
         const solutionAnswer = currentQuestion.answers.find(a => a.is_correct);
         if (solutionAnswer) {
             setCode(solutionAnswer.text);
@@ -204,9 +218,9 @@ const CodeSandbox = () => {
 
             <div className="difficulty-filter">
                 <label htmlFor="difficulty">Difficulty Level: </label>
-                <select 
-                    id="difficulty" 
-                    value={difficulty} 
+                <select
+                    id="difficulty"
+                    value={difficulty}
                     onChange={handleDifficultyChange}
                     disabled={loading}
                 >
@@ -224,8 +238,8 @@ const CodeSandbox = () => {
                         <>
                             <div className="question-selector">
                                 <label htmlFor="question">Select Challenge: </label>
-                                <select 
-                                    id="question" 
+                                <select
+                                    id="question"
                                     onChange={(e) => {
                                         const selectedQuestion = questions.find(q => q.id === parseInt(e.target.value));
                                         if (selectedQuestion) {
@@ -242,23 +256,23 @@ const CodeSandbox = () => {
                                     ))}
                                 </select>
                             </div>
-                            
+
                             <div className="question-description">
                                 {currentQuestion.question.split('\n\n')[0].split('\n').map((line, i) => (
                                     <p key={i}>{line}</p>
                                 ))}
                                 <p className="difficulty">
-                                    Difficulty: {currentQuestion.difficulty === 1 ? 'Easy' : 
-                                                currentQuestion.difficulty === 2 ? 'Medium' : 'Hard'}
+                                    Difficulty: {currentQuestion.difficulty === 1 ? 'Easy' :
+                                        currentQuestion.difficulty === 2 ? 'Medium' : 'Hard'}
                                 </p>
                             </div>
-                            
+
                             {testResults && (
                                 <div className={`test-results ${testResults.allPassed ? 'success' : 'failure'}`}>
                                     <h3>{testResults.allPassed ? 'All Tests Passed! 🎉' : 'Some Tests Failed'}</h3>
                                     {testResults.results.map((result, i) => (
                                         <div key={i} className={`test-case ${result.passed ? 'passed' : 'failed'}`}>
-                                            <div>Test {i+1}: {result.passed ? '✓' : '✗'}</div>
+                                            <div>Test {i + 1}: {result.passed ? '✓' : '✗'}</div>
                                             <div><strong>Input:</strong> {JSON.stringify(result.input)}</div>
                                             <div><strong>Expected:</strong> {JSON.stringify(result.expected)}</div>
                                             {!result.passed && <div><strong>Actual:</strong> {JSON.stringify(result.actual)}</div>}
@@ -266,18 +280,18 @@ const CodeSandbox = () => {
                                     ))}
                                 </div>
                             )}
-                            
+
                             <div className="hint-section">
                                 {currentQuestion.answers.some(a => a.is_correct) && (
-                                    <button 
-                                        onClick={handleShowSolution} 
+                                    <button
+                                        onClick={handleShowSolution}
                                         className="hint-button"
                                         disabled={showSolution}
                                     >
                                         {showSolution ? 'Solution Shown' : 'Show Solution'}
                                     </button>
                                 )}
-                                
+
                                 {showSolution && currentQuestion.answers.find(a => a.is_correct)?.explanation && (
                                     <div className="explanation">
                                         <h4>Explanation:</h4>
@@ -292,7 +306,7 @@ const CodeSandbox = () => {
                         </div>
                     )}
                 </div>
-                
+
                 <div className="sandbox-panel">
                     <h2 className='code-editr'>Code Editor</h2>
                     <AceEditor
@@ -312,14 +326,14 @@ const CodeSandbox = () => {
                         }}
                     />
                     <div className="action-buttons">
-                        <button 
+                        <button
                             onClick={handleRunCode}
                             disabled={loading}
                             className="run-button"
                         >
                             {loading ? 'Running...' : 'Run Code'}
                         </button>
-                        <button 
+                        <button
                             onClick={handleTestCode}
                             disabled={loading || !currentQuestion}
                             className="test-button"
@@ -327,7 +341,7 @@ const CodeSandbox = () => {
                             {loading ? 'Testing...' : 'Test Solution'}
                         </button>
                     </div>
-                    
+
                     <div className="output-panel">
                         <h3>Output:</h3>
                         <pre>{output}</pre>

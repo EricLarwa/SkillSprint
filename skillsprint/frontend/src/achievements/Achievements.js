@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import './Achievements.css';
+import axios from 'axios';
 
 const Achievements = () => {
     const [achievements, setAchievements] = useState({
@@ -8,52 +9,52 @@ const Achievements = () => {
         languages: []
     });
 
-    const token = localStorage.getItem('jwt_token'); // Retrieve the token from local storage
-
     useEffect(() => {
-        // Initializing local achievements object
-        const localAchievements = {
-            finance: [],
-            coding: [],
-            languages: []
-        };
+        const fetchAchievements = async () => {
+            const token = localStorage.getItem('token');
+            console.log('JWT Token:', token); // Debugging log
 
-        // Retrieve completed achievements from local storage
-        const completedFinance = JSON.parse(localStorage.getItem('completedFinance') || '[]');
-        const completedCoding = JSON.parse(localStorage.getItem('completedCoding') || '[]');
-        const completedLanguages = JSON.parse(localStorage.getItem('completedLanguage') || '[]');
+            if (!token) {
+                console.error('JWT token is missing');
+                return;
+            }
+            try {
+                const response = await axios.get('http://localhost:4000/api/user/achievements', {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                console.log('Response:', response.data); // Debugging log
 
-        // Finance achievements
-        if (completedFinance.length >= 1) {
-            localAchievements.finance.push({ title: '✅ First Finance Problem Completed!' });
+                setAchievements({
+                    finance: response.data.finance || [],
+                    coding: response.data.coding || [],
+                    languages: response.data.languages || []
+                });
+            } catch (error) {
+                console.error('Error fetching achievements:', error);
+            };
         }
-        if (completedFinance.length >= 5) {
-            localAchievements.finance.push({ title: '🔥 Completed 5 Finance Problems!' });
-        }
-
-        // Coding achievements
-        if (completedCoding.length >= 1) {
-            localAchievements.coding.push({ title: '✅ First Coding Problem Completed!' });
-        }
-        if (completedCoding.length >= 5) {
-            localAchievements.coding.push({ title: '🔥 Completed 5 Coding Problems!' });
-        }
-
-        // Language achievements
-        if (completedLanguages.length >= 1) {
-            localAchievements.languages.push({ title: '✅ First Language Lesson Completed!' });
-        }
-        if (completedLanguages.length >= 5) {
-            localAchievements.languages.push({ title: '🔥 Completed 5 Language Lessons!' });
-        }
-
-        // Update achievements state
-        console.log('Completed Finance:', completedFinance);
-        console.log('Completed Coding:', completedCoding);
-        console.log('Completed Languages:', completedLanguages);
-        
-        setAchievements(localAchievements);
+        fetchAchievements();
     }, []);
+
+    // Helper function to display only the first achievement if there are more than 1, and a message if more than 5
+    const renderAchievements = (category) => {
+        if (category.length > 5) {
+            return <p>✅ You have completed all questions!</p>;
+        } else if (category.length > 1) {
+            return <p>{category[0].title}</p>;
+        } else if (category.length > 0) {
+            return <ul>
+                {category.map((ach, index) => (
+                    <li key={index}>{ach.title}</li>
+                ))}
+            </ul>;
+        } else {
+            return <p>You have no achievements! Get started on the lessons.</p>;
+        }
+    };
 
     return (
         <div className="achievements-container">
@@ -62,41 +63,17 @@ const Achievements = () => {
             <div className="achievements-boxes">
                 <div className="abox-one">
                     <h2>Finance</h2>
-                    {achievements.finance.length > 0 ? (
-                        <ul>
-                            {achievements.finance.map((ach, index) => (
-                                <li key={index}>{ach.title}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>You have no achievements! Get started on the finance lessons.</p>
-                    )}
+                    {renderAchievements(achievements.finance)}
                 </div>
 
                 <div className="abox-two">
                     <h2>Coding</h2>
-                    {achievements.coding.length > 0 ? (
-                        <ul>
-                            {achievements.coding.map((ach, index) => (
-                                <li key={index}>{ach.title}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>You have no achievements! Get started on the coding lessons.</p>
-                    )}
+                    {renderAchievements(achievements.coding)}
                 </div>
 
                 <div className="abox-three">
                     <h2>Languages</h2>
-                    {achievements.languages.length > 0 ? (
-                        <ul>
-                            {achievements.languages.map((ach, index) => (
-                                <li key={index}>{ach.title}</li>
-                            ))}
-                        </ul>
-                    ) : (
-                        <p>You have no achievements! Get started on the language lessons.</p>
-                    )}
+                    {renderAchievements(achievements.languages)}
                 </div>
             </div>
         </div>

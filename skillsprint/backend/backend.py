@@ -2,13 +2,13 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
-from flask_jwt_extended import JWTManager, create_access_token
-from models import db, User, Category, Question, Answer
+from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
+from models import db, User, Category, Question, Answer, Achievement
 from seed_data import seed_database
 from db import initialize_databases
 import subprocess
 import os
-
+from collections import defaultdict
 app = Flask(__name__, static_folder='static')
 
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
@@ -31,7 +31,7 @@ def login():
     password = request.json.get('password')
     user = User.query.filter_by(email=email).first()
     if user and bcrypt.check_password_hash(user.password, password):
-        access_token = create_access_token(identity={'email': user.email})
+        access_token = create_access_token(identity=json.dumps({'email': user.email}))
         return jsonify(access_token=access_token), 200
     return jsonify({"msg": "Bad email or password"}), 401
 
@@ -127,7 +127,50 @@ def run_code():
     
     finally:
         if os.path.exists(file_name):
-            os.remove(file_name)
+            os.remove(file_name)   
+            
+import json
+@app.route('/api/user/achievements', methods=['GET'])
+@jwt_required()
+def get_user_achievements():
+    identity = json.loads(get_jwt_identity())
+    email = identity['email']
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    achievements = Achievement.query.filter_by(user_id=user.id).all()
+
+    grouped_achievements = defaultdict(list)
+    for a in achievements:
+        grouped_achievements[a.category].append({"title": a.title})
+
+    return jsonify(grouped_achievements), 200
+
+@app.route('/api/user/add-achievement', methods=['POST'])
+@jwt_required()
+def add_achievement():
+    identity = json.loads(get_jwt_identity())  # Decode the JWT identity
+    email = identity['email']
+    user = User.query.filter_by(email=email).first()
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    data = request.json
+    category = data.get('category')
+    title = data.get('title')
+
+    if not category or not title:
+        return jsonify({"error": "Category and title are required"}), 400
+
+    # Add the achievement to the database
+    new_achievement = Achievement(user_id=user.id, category=category, title=title)
+    db.session.add(new_achievement)
+    db.session.commit()
+
+    return jsonify({"msg": "Achievement added successfully"}), 201
         
 
 if __name__ == '__main__':
