@@ -3,12 +3,12 @@ from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from flask_bcrypt import Bcrypt
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
-from models import db, User, Category, Question, Answer
+from models import db, User, Category, Question, Answer, Achievement
 from seed_data import seed_database
 from db import initialize_databases
 import subprocess
 import os
-
+from collections import defaultdict
 app = Flask(__name__, static_folder='static')
 
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
@@ -133,22 +133,20 @@ import json
 @app.route('/api/user/achievements', methods=['GET'])
 @jwt_required()
 def get_user_achievements():
-    identity = json.loads(get_jwt_identity())  # Will give you: {'email': user.email}
-    print(f"JWT identity: {identity}")
+    identity = json.loads(get_jwt_identity())
+    email = identity['email']
+    user = User.query.filter_by(email=email).first()
 
-    # For now, let's just simulate achievement progress:
-    mock_achievements = {
-        "finance": [
-            {"title": "✅ First Finance Problem Completed!"},
-            {"title": "🔥 Completed 5 Finance Problems!"}
-        ],
-        "coding": [
-            {"title": "✅ First Coding Problem Completed!"}
-        ],
-        "languages": []
-    }
+    if not user:
+        return jsonify({"error": "User not found"}), 404
 
-    return jsonify(mock_achievements), 200
+    achievements = Achievement.query.filter_by(user_id=user.id).all()
+
+    grouped_achievements = defaultdict(list)
+    for a in achievements:
+        grouped_achievements[a.category].append({"title": a.title})
+
+    return jsonify(grouped_achievements), 200
 
 @app.route('/api/user/add-achievement', methods=['POST'])
 @jwt_required()

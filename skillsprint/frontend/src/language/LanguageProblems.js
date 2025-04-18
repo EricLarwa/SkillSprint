@@ -1,12 +1,31 @@
-import React, { useState, useEffect} from 'react'
+import React, { useState, useEffect } from 'react'
 import './LanguageProblems.css';
-
+import axios from 'axios';
 const LanguageProblems = () => {
     const [questions, setQuestions] = useState([])
     const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
     const [selectedAnswer, setSelectedAnswer] = useState(null)
     const [answerSubmitted, setAnswerSubmitted] = useState(false)
     const [isCorrect, setIsCorrect] = useState(null)
+
+    const addAchievement = async (category, title) => {
+        const token = localStorage.getItem('token');
+        try {
+            const response = await axios.post(
+                'http://localhost:4000/api/user/add-achievement',
+                { category, title },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                }
+            );
+            console.log('Achievement added:', response.data);
+        } catch (error) {
+            console.error('Error adding achievement:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchQuestions = async () => {
@@ -15,7 +34,7 @@ const LanguageProblems = () => {
                 const data = await response.json()
                 console.log('Full log data:', data)
                 if (data.length > 0) {
-                    setQuestions(data) 
+                    setQuestions(data)
                 }
             } catch (error) {
                 console.error('Error fetching questions:', error)
@@ -29,13 +48,13 @@ const LanguageProblems = () => {
 
     const handleAnswerChange = (event) => {
         setSelectedAnswer(Number(event.target.value))
-        setAnswerSubmitted(false) 
+        setAnswerSubmitted(false)
     }
-    
+
     const handleSubmit = async (event) => {
         event.preventDefault()
         if (!currentQuestion) return
-        
+
         try {
             const response = await fetch('http://localhost:4000/api/check-answer', {
                 method: 'POST',
@@ -52,16 +71,10 @@ const LanguageProblems = () => {
 
             setAnswerSubmitted(true)
             setIsCorrect(data.is_correct)
-            
+
             if (data.is_correct) {
                 console.log('Correct answer!');
-                const languageCompleted = JSON.parse(localStorage.getItem('completedLanguage') || '[]');
-                // Avoid duplicate entries
-                if (!languageCompleted.includes(currentQuestion.id)) {
-                    languageCompleted.push(currentQuestion.id);
-                    localStorage.setItem('completedLanguage', JSON.stringify(languageCompleted));
-                    }
-                console.log('Updated completedlanguage:', languageCompleted);
+                addAchievement('languages', "✅ Completed a Language Lesson");
             } else {
                 console.log('Incorrect answer.')
             }
@@ -111,16 +124,16 @@ const LanguageProblems = () => {
                     ) : (
                         <p>Loading answers...</p>
                     )}
-                    
+
                     {answerSubmitted && (
                         <div className={`feedback-message ${isCorrect ? 'correct' : 'incorrect'}`}>
                             {isCorrect ? 'Correct!' : 'Incorrect. Try again!'}
                         </div>
                     )}
-                    
+
                     <div className="btn-group">
-                        <button 
-                            className="submit-problem" 
+                        <button
+                            className="submit-problem"
                             onClick={handleSubmit}
                             disabled={answerSubmitted || selectedAnswer === null}
                         >
